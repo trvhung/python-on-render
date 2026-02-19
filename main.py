@@ -16,7 +16,7 @@ os.makedirs(OUTPUT_DIR, exist_ok=True)
 app.mount("/generated", StaticFiles(directory=OUTPUT_DIR), name="generated")
 
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-MODEL_NAME = "gemini-3-pro-image-preview"
+MODEL_NAME = "gemini-2.5-flash-image"
 
 if not GEMINI_API_KEY:
     raise ValueError("Missing GEMINI_API_KEY")
