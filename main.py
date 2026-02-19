@@ -66,7 +66,7 @@ async def generate_image(data: ImageRequest):
             raise HTTPException(status_code=500, detail="No image generated")
 
         server_name = extract_server_name(data.prompt)
-        filename = clean_filename(server_name) + ".png"
+        filename = clean_filename(server_name) + ".jpeg"
         filepath = os.path.join(OUTPUT_DIR, filename)
 
         for part in candidate.content.parts:
