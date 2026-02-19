@@ -1,4 +1,3 @@
-import base64
 import os
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import Response
@@ -6,16 +5,15 @@ from pydantic import BaseModel
 from google import genai
 from google.genai import types
 
-# ==== CONFIG ====
+app = FastAPI()
+
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 MODEL_NAME = "gemini-3-pro-image-preview"
 
 if not GEMINI_API_KEY:
-    raise ValueError("Missing GEMINI_API_KEY environment variable")
+    raise ValueError("Missing GEMINI_API_KEY")
 
 client = genai.Client(api_key=GEMINI_API_KEY)
-
-app = FastAPI()
 
 class ImageRequest(BaseModel):
     prompt: str
@@ -24,23 +22,22 @@ class ImageRequest(BaseModel):
 
 @app.post("/generate-image")
 async def generate_image(data: ImageRequest):
-
-    contents = [
-        types.Content(
-            role="user",
-            parts=[types.Part.from_text(text=data.prompt)],
-        ),
-    ]
-
-    config = types.GenerateContentConfig(
-        image_config=types.ImageConfig(
-            aspect_ratio=data.aspect_ratio,
-            image_size=data.image_size,
-        ),
-        response_modalities=["IMAGE"],
-    )
-
     try:
+        contents = [
+            types.Content(
+                role="user",
+                parts=[types.Part.from_text(text=data.prompt)],
+            )
+        ]
+
+        config = types.GenerateContentConfig(
+            image_config=types.ImageConfig(
+                aspect_ratio=data.aspect_ratio,
+                image_size=data.image_size,
+            ),
+            response_modalities=["IMAGE"],
+        )
+
         response = client.models.generate_content(
             model=MODEL_NAME,
             contents=contents,
